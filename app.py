@@ -26,7 +26,6 @@ def get_completion(inputs, parameters=None, ENDPOINT_URL=HF_API_TTI_BASE):
         headers=headers,
         json=data
     )
-    # Add this block:
     if response.status_code != 200:
         raise RuntimeError(f"API returned status code {response.status_code}: {response.text}")
     try:
@@ -41,7 +40,6 @@ def get_completion(inputs, parameters=None, ENDPOINT_URL=HF_API_TTI_BASE):
         return result[0]
     return result
 
-# Helper to convert base64 string to PIL Image
 def base64_to_pil(img_base64):
     base64_decoded = base64.b64decode(img_base64)
     byte_stream = io.BytesIO(base64_decoded)
@@ -61,7 +59,7 @@ def generate(prompt, negative_prompt, steps, guidance, width, height):
     return pil_image
 
 with gr.Blocks() as demo:
-    gr.Markdown("# Image Generation with Stable Diffusion")
+    gr.Markdown("# Image Generation with FLUX.1-schnell (Hugging Face)")
     with gr.Row():
         with gr.Column(scale=4):
             prompt = gr.Textbox(label="Your prompt")
@@ -74,8 +72,8 @@ with gr.Blocks() as demo:
                 steps = gr.Slider(label="Inference Steps", minimum=1, maximum=100, value=25, info="How many steps will the denoiser denoise the image?")
                 guidance = gr.Slider(label="Guidance Scale", minimum=1, maximum=20, value=7, info="Controls how much the text prompt influences the result")
             with gr.Column():
-                width = gr.Slider(label="Width", minimum=64, maximum=512, step=64, value=512)
-                height = gr.Slider(label="Height", minimum=64, maximum=512, step=64, value=512)
+                width = gr.Slider(label="Width", minimum=64, maximum=1024, step=64, value=768)
+                height = gr.Slider(label="Height", minimum=64, maximum=1024, step=64, value=768)
     output = gr.Image(label="Result")
     btn.click(fn=generate, inputs=[prompt, negative_prompt, steps, guidance, width, height], outputs=[output])
 
