@@ -5,7 +5,7 @@ import base64
 import requests
 import gradio as gr
 
-HF_TOKEN = os.environ["HF_TOKEN"]
+HF_TOKEN = os.environ["HF_API_KEY"]
 HF_API_TTI_BASE = os.environ["HF_API_TTI_BASE"]  # Your image endpoint
 
 # Use the Llama 3.1-8B-Instruct in single-prompt, single-response mode
