@@ -26,14 +26,18 @@ def get_completion(inputs, parameters=None, ENDPOINT_URL=HF_API_TTI_BASE):
         headers=headers,
         json=data
     )
-    result = response.json()
+    # Add this block:
+    if response.status_code != 200:
+        raise RuntimeError(f"API returned status code {response.status_code}: {response.text}")
+    try:
+        result = response.json()
+    except Exception as e:
+        raise RuntimeError(f"Could not decode JSON from API: {e}\nResponse content: {response.text}")
     if isinstance(result, dict) and "error" in result:
         raise RuntimeError(f"API Error: {result['error']}")
-    # API returns a dict with either 'images' or a base64 string
     if isinstance(result, dict) and "images" in result:
         return result["images"][0]
     if isinstance(result, list):
-        # sometimes pipeline returns list of base64 images
         return result[0]
     return result
 
